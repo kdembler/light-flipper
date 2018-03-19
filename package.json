@@ -1,0 +1,22 @@
+{
+  "name": "light-flipper",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kdembler/light-flipper.git"
+  },
+  "main": "index.js",
+  "author": "Klaudiusz Dembler",
+  "license": "MIT",
+  "dependencies": {
+    "rpi-gpio": "^0.9.1",
+    "web3": "^0.20.6"
+  },
+  "devDependencies": {
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.7.0",
+    "eslint-plugin-standard": "^3.0.1"
+  }
+}
