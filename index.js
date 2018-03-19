@@ -6,11 +6,11 @@ const fs = require('fs')
 const DEFAULT_PIN = 7
 
 const config = {
-  'pin': DEFAULT_PIN,
-  'network': 'development',
-  'abiPath': 'abi.json',
-  'addressPath': 'address.json',
-  'ipcPath': '/home/archie/.rinkeby/geth.ipc'
+  pin: DEFAULT_PIN,
+  network: 'development',
+  abiPath: 'abi.json',
+  addressPath: 'address.json',
+  ipcPath: '/home/archie/.rinkeby/geth.ipc'
 }
 
 // read config
