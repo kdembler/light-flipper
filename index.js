@@ -36,7 +36,7 @@ let rpcPort = config.devPort
 if (config.network === 'rinkeby') {
   rpcPort = 8545
 }
-const provider = new Web3.providers.HttpProvider(`${config.rpcAddress}:${rpcPort}`)
+const provider = new Web3.providers.HttpProvider(`http://${config.rpcAddress}:${rpcPort}`)
 const web3 = new Web3(provider)
 
 web3.eth.defaulAccount = web3.eth.accounts[0]
@@ -53,6 +53,7 @@ flipper.FlippedLight((err, result) => {
   if (err) {
     console.error('Failed fetching event')
   } else {
+    console.log('Flipping')
     if (gpioReady) {
       gpio.write(config.pin, !result.args.newState, err => {
         if (err) {
