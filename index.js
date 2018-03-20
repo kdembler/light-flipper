@@ -23,7 +23,7 @@ const config = {
   network: 'development',
   abiPath: 'abi.json',
   addressPath: 'address.json',
-  ipcPath: '/home/archie/.rinkeby/geth.ipc',
+  ipcPath: `${process.env.HOME}/.rinkeby/geth.ipc`,
   ...loadedConfig
 }
 
