@@ -9,11 +9,11 @@ function readJSON (path, required = false) {
   if (fs.existsSync(path)) {
     return JSON.parse(fs.readFileSync(path, 'UTF-8'))
   }
-  if (!required) {
-    return null
+  if (required) {
+    console.error(`Error: file '${path}' doesn't exist`)
+    process.exit(1)
   }
-  console.error(`Couldn't read file from ${path}`)
-  process.exit(1)
+  return null
 }
 
 const loadedConfig = readJSON('config.json') || {}
@@ -51,7 +51,7 @@ let flipper = Flipper.at(address)
 // listen for events
 flipper.FlippedLight((err, result) => {
   if (err) {
-    console.log('Failed fetching event')
+    console.error('Failed fetching event')
   } else {
     console.log(result)
   }
