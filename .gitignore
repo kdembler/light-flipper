@@ -7,3 +7,4 @@ node_modules
 build/
 address.json
 abi.json
+config.json

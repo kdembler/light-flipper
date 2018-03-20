@@ -1,23 +1,36 @@
 const Web3 = require('web3')
 const net = require('net')
-// const gpio = require('rpi-gpio')
+const gpio = require('rpi-gpio')
 const fs = require('fs')
 
 const DEFAULT_PIN = 7
 
-let config = {
+function readJSON (path, required = false) {
+  if (fs.existsSync(path)) {
+    return JSON.parse(fs.readFileSync(path, 'UTF-8'))
+  }
+  if (!required) {
+    return null
+  }
+  console.error(`Couldn't read file from ${path}`)
+  process.exit(1)
+}
+
+const loadedConfig = readJSON('config.json') || {}
+
+const config = {
   pin: DEFAULT_PIN,
   network: 'development',
   abiPath: 'abi.json',
   addressPath: 'address.json',
-  ipcPath: '/home/archie/.rinkeby/geth.ipc'
+  ipcPath: '/home/archie/.rinkeby/geth.ipc',
+  ...loadedConfig
 }
 
-// read config
+// setup gpio
+gpio.setup(config.pin, gpio.DIR_OUT)
 
-// setup
-// gpio.setup(config.pin, gpio.DIR_OUT)
-
+// setup web3
 let provider = null
 if (config.network === 'rinkeby') {
   provider = new Web3.providers.IpcProvider(config.ipcPath, net)
@@ -28,12 +41,14 @@ let web3 = new Web3(provider)
 
 web3.eth.defaulAccount = web3.eth.accounts[0]
 
-let abi = JSON.parse(fs.readFileSync(config.abiPath, 'UTF-8'))
-let address = JSON.parse(fs.readFileSync(config.addressPath, 'UTF-8')).address
+// setup contract
+let abi = readJSON(config.abiPath, true)
+let address = readJSON(config.addressPath, true).address
 
 let Flipper = web3.eth.contract(abi)
 let flipper = Flipper.at(address)
 
+// listen for events
 flipper.FlippedLight((err, result) => {
   if (err) {
     console.log('Failed fetching event')
