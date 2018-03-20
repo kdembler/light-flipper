@@ -5,7 +5,10 @@
     "type": "git",
     "url": "https://github.com/kdembler/light-flipper.git"
   },
-  "main": "index.js",
+  "main": "flipper.js",
+  "scripts": {
+    "flipper": "node flipper.js"
+  },
   "author": "Klaudiusz Dembler",
   "license": "MIT",
   "dependencies": {
