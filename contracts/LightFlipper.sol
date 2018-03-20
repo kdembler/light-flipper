@@ -15,9 +15,9 @@ contract LightFlipper {
     mapping(address => bool) public flippingRights;
     mapping(address => uint) pendingWithdrawals;
 
-    event BoughtFlippingRights(address);
-    event RevokedFlippingRights(address);
-    event FlippedLight(address, bool);
+    event BoughtFlippingRights(address who);
+    event RevokedFlippingRights(address who);
+    event FlippedLight(address who, bool newState);
 
     function LightFlipper() public {
         controller = msg.sender;

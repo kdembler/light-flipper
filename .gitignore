@@ -3,4 +3,7 @@ logs
 
 node_modules
 
+# artifacts
 build/
+address.json
+abi.json

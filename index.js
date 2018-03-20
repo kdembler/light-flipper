@@ -1,11 +1,11 @@
 const Web3 = require('web3')
 const net = require('net')
-const gpio = require('rpi-gpio')
+// const gpio = require('rpi-gpio')
 const fs = require('fs')
 
 const DEFAULT_PIN = 7
 
-const config = {
+let config = {
   pin: DEFAULT_PIN,
   network: 'development',
   abiPath: 'abi.json',
@@ -16,7 +16,7 @@ const config = {
 // read config
 
 // setup
-gpio.setup(config.pin, gpio.DIR_OUT)
+// gpio.setup(config.pin, gpio.DIR_OUT)
 
 let provider = null
 if (config.network === 'rinkeby') {
@@ -38,6 +38,8 @@ flipper.FlippedLight((err, result) => {
   if (err) {
     console.log('Failed fetching event')
   } else {
-    console.log('Got result' + result)
+    console.log(result)
   }
 })
+
+console.log('Listening for events')
