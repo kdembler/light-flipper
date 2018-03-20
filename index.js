@@ -2,8 +2,6 @@ const Web3 = require('web3')
 const gpio = require('rpi-gpio')
 const fs = require('fs')
 
-const DEFAULT_PIN = 7
-
 function readJSON (path, required = false) {
   if (fs.existsSync(path)) {
     return JSON.parse(fs.readFileSync(path, 'UTF-8'))
@@ -15,37 +13,30 @@ function readJSON (path, required = false) {
   return null
 }
 
-function gpioWriteCallback (err) {
-  if (err) {
-    console.error(`Error: couldn't write to GPIO pin`)
-    process.exit(1)
-  }
-}
-
 const loadedConfig = readJSON('config.json') || {}
 
 const config = {
-  pin: DEFAULT_PIN,
+  pin: 7,
   network: 'development',
+  devPort: 9545,
+  rpcAddress: 'localhost',
   abiPath: 'abi.json',
   addressPath: 'address.json',
-  ipcPath: `${process.env.HOME}/.rinkeby/geth.ipc`,
   ...loadedConfig
 }
 
 // setup gpio
 let gpioReady = false
-gpio.setup(config.pin, gpio.DIR_OUT, () => {
+gpio.setup(config.pin, gpio.DIR_HIGH, () => {
   gpioReady = true
-  gpio.write(config.pin, false, gpioWriteCallback)
 })
 
 // setup web3
-let rpcPort = 9545
+let rpcPort = config.devPort
 if (config.network === 'rinkeby') {
   rpcPort = 8545
 }
-const provider = new Web3.providers.HttpProvider(`http://localhost:${rpcPort}`)
+const provider = new Web3.providers.HttpProvider(`${config.rpcAddress}:${rpcPort}`)
 const web3 = new Web3(provider)
 
 web3.eth.defaulAccount = web3.eth.accounts[0]
@@ -63,11 +54,16 @@ flipper.FlippedLight((err, result) => {
     console.error('Failed fetching event')
   } else {
     if (gpioReady) {
-      gpio.write(config.pin, result.args.newState, gpioWriteCallback)
+      gpio.write(config.pin, !result.args.newState, err => {
+        if (err) {
+          console.error(`Error: couldn't write to GPIO pin`)
+          process.exit(1)
+        }
+      })
     } else {
       console.error('Warning: got event, but GPIO not ready')
     }
   }
 })
 
-console.log('Listening for events')
+console.log('Listening for flips')
