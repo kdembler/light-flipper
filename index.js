@@ -16,6 +16,13 @@ function readJSON (path, required = false) {
   return null
 }
 
+function gpioWriteCallback (err) {
+  if (err) {
+    console.error(`Error: couldn't write to GPIO pin`)
+    process.exit(1)
+  }
+}
+
 const loadedConfig = readJSON('config.json') || {}
 
 const config = {
@@ -28,7 +35,11 @@ const config = {
 }
 
 // setup gpio
-gpio.setup(config.pin, gpio.DIR_OUT)
+let gpioReady = false
+gpio.setup(config.pin, gpio.DIR_OUT, () => {
+  gpioReady = true
+  gpio.write(config.pin, false, gpioWriteCallback)
+})
 
 // setup web3
 let provider = null
@@ -53,7 +64,11 @@ flipper.FlippedLight((err, result) => {
   if (err) {
     console.error('Failed fetching event')
   } else {
-    console.log(result)
+    if (gpioReady) {
+      gpio.write(config.pin, result.args.newState, gpioWriteCallback)
+    } else {
+      console.error('Warning: got event, but GPIO not ready')
+    }
   }
 })
 
