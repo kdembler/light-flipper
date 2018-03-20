@@ -1,5 +1,4 @@
 const Web3 = require('web3')
-const net = require('net')
 const gpio = require('rpi-gpio')
 const fs = require('fs')
 
@@ -42,13 +41,12 @@ gpio.setup(config.pin, gpio.DIR_OUT, () => {
 })
 
 // setup web3
-let provider = null
+let rpcPort = 9545
 if (config.network === 'rinkeby') {
-  provider = new Web3.providers.IpcProvider(config.ipcPath, net)
-} else {
-  provider = new Web3.providers.HttpProvider('http://localhost:9545')
+  rpcPort = 8545
 }
-let web3 = new Web3(provider)
+const provider = new Web3.providers.HttpProvider(`http://localhost:${rpcPort}`)
+const web3 = new Web3(provider)
 
 web3.eth.defaulAccount = web3.eth.accounts[0]
 
