@@ -6,14 +6,9 @@ pragma solidity ^0.4.19;
 
 contract LightFlipper {
     enum State { Active, Paused, Inactive }
+
     State public state;
-
     address public controller;
-    modifier onlyController() {
-        require(msg.sender == controller);
-        _;
-    }
-
     bool public flipped;
 
     mapping(address => bool) public flippingRights;
@@ -22,6 +17,11 @@ contract LightFlipper {
     event BoughtFlippingRights(address who);
     event RevokedFlippingRights(address who);
     event FlippedLight(address who, bool newState);
+
+    modifier onlyController() {
+        require(msg.sender == controller);
+        _;
+    }
 
     /**
      *  @dev Light Flipper constructor
