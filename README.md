@@ -17,5 +17,5 @@ with abi
 To run your own flipper:
 - Install dependencies
 - Set up your network config in `truffle.js`
-- Run migrations with `truffle migrate` - this will create files `abi.json` and `config.json` making it possible for flipper application to interact with deployed contract
+- Run migrations with `truffle migrate` - this will create file `contract.json` making it possible for flipper application to interact with deployed contract
 - Start flipper with `yarn run flipper` - note that accessing GPIO may require administrative privileges, if needed any configuration can be overriden by creating `config.json` file

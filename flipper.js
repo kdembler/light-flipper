@@ -13,6 +13,7 @@ function readJSON (path, required = false) {
   return null
 }
 
+// setup config
 const loadedConfig = readJSON('config.json') || {}
 
 const config = {
@@ -20,8 +21,7 @@ const config = {
   network: 'development',
   devPort: 9545,
   rpcAddress: 'localhost',
-  abiPath: 'abi.json',
-  addressPath: 'address.json',
+  contractInfoPath: 'contract.json',
   ...loadedConfig
 }
 
@@ -42,11 +42,12 @@ const web3 = new Web3(provider)
 web3.eth.defaulAccount = web3.eth.accounts[0]
 
 // setup contract
-let abi = readJSON(config.abiPath, true)
-let address = readJSON(config.addressPath, true).address
+const contractInfo = readJSON(config.contractInfoPath)
+const abi = contractInfo.abi
+const address = contractInfo.address
 
-let Flipper = web3.eth.contract(abi)
-let flipper = Flipper.at(address)
+const Flipper = web3.eth.contract(abi)
+const flipper = Flipper.at(address)
 
 // listen for events
 flipper.FlippedLight((err, result) => {
