@@ -6,7 +6,7 @@ pragma solidity ^0.4.19;
 
 contract LightFlipper {
     enum State { Active, Paused, Inactive }
-    State state;
+    State public state;
 
     address public controller;
     modifier onlyController() {
