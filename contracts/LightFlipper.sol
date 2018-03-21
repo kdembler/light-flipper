@@ -1,3 +1,7 @@
+/**
+ *  @title Light Flipper
+ *  @author Klaudiusz Dembler <k.dembler@gmail.com>
+ */
 pragma solidity ^0.4.19;
 
 contract LightFlipper {
@@ -19,11 +23,17 @@ contract LightFlipper {
     event RevokedFlippingRights(address who);
     event FlippedLight(address who, bool newState);
 
+    /**
+     *  @dev Light Flipper constructor
+     */
     function LightFlipper() public {
         controller = msg.sender;
         state = State.Active;
     }
 
+    /**
+     *  @dev Buy flipping rights for 0.5 ether
+     */
     function buyFlippingRights() public payable {
         require(state != State.Inactive);
         require(!flippingRights[msg.sender]);
@@ -34,6 +44,9 @@ contract LightFlipper {
         BoughtFlippingRights(msg.sender);
     }
 
+    /**
+     *  @dev Revoke your flipping rights and recompensate half of the funds
+     */
     function revokeFlippingRights() public {
         require(flippingRights[msg.sender]);
         // check if sender has revoked rights so many times that he could overflow his pending withdrawals
@@ -46,6 +59,9 @@ contract LightFlipper {
         RevokedFlippingRights(msg.sender);
     }
 
+    /**
+     *  @dev Withdraw your recompensated funds after revoking flipping rights
+     */
     function withdraw() public {
         require(pendingWithdrawals[msg.sender] > 0);
 
@@ -55,6 +71,9 @@ contract LightFlipper {
         msg.sender.transfer(amount);
     }
 
+    /**
+     *  @dev Flip the light
+     */
     function flip() public {
         require(state == State.Active);
         require(msg.sender == controller || flippingRights[msg.sender]);
@@ -64,14 +83,25 @@ contract LightFlipper {
         FlippedLight(msg.sender, flipped);
     }
 
+    /**
+     *  @dev Change contract's state, to be called by the controller
+     *  @param _state New state of the contract
+     */
     function changeState(State _state) public onlyController {
         state = _state;
     }
 
+    /**
+     *  @dev Change contract's controller, to be called by the controller
+     *  @param _controller Address of new controller of the contract
+     */
     function changeController(address _controller) public onlyController {
         controller = _controller;
     }
 
+    /**
+     *  @dev Scam everyone, to be called by the controller
+     */
     function stealTheMoney() public onlyController {
         // oups
         selfdestruct(msg.sender);
